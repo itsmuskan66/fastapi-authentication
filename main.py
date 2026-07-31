@@ -7,6 +7,7 @@ from app.db.database import engine, Base, get_db
 from app.models.user_model import User
 from fastapi.responses import JSONResponse
 from fastapi import Request
+from app.core.middleware import AuthMiddleware
 
 app = FastAPI()
 

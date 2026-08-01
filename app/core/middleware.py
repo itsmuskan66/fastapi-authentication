@@ -51,14 +51,11 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 status_code=401,
                 content={"detail": "Invalid access token."}
             )
-
         if payload.get("type") != "access":
             return JSONResponse(
                 status_code=401,
                 content={"detail": "Wrong token type."}
             )
-
-        request.state.user = payload  # payload["sub"] mein user_id hai
-
+        request.state.user = payload                                                   # payload["sub"] mein user_id hai
         response = await call_next(request)
         return response

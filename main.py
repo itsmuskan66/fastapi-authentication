@@ -8,8 +8,11 @@ from app.models.user_model import User
 from fastapi.responses import JSONResponse
 from fastapi import Request
 from app.core.middleware import AuthMiddleware
+from app.core.middleware import AuthMiddleware
+
 
 app = FastAPI()
+app.add_middleware(AuthMiddleware)
 
 Base.metadata.create_all(bind=engine)
 
@@ -283,8 +286,19 @@ def logout(
         "message": "Logged out successfully"
     }
 
+@app.get("/profile")
+def profile(request: Request, db: Session = Depends(get_db)):
+    user_id = int(request.state.user["sub"])
+    user = db.query(User).filter(User.id == user_id).first()
 
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
 
+    return {
+        "id": user.id,
+        "name": user.name,
+        "email": user.user_email
+    }
 
 
 
